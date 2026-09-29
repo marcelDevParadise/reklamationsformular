@@ -4,7 +4,7 @@ Tags: reklamation, formular, pdf
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Das Plugin verwendet keine externen Captcha-, PDF- oder Formulardienste. Spam-Sc
 Der Mailversand verwendet WordPress `wp_mail`. Mailanbieter oder SMTP-Plugins können eigene externe Dienste verwenden. Die tatsächliche E-Mail-Zustellung und die Datenschutzhinweise müssen vor Live-Nutzung geprüft werden.
 
 == Changelog ==
+
+= 1.1.2 =
+Der GitHub-Repository-Name und der Release-Workflow stimmen jetzt mit der bereits im Plugin hinterlegten Updatequelle überein. WordPress kann dadurch Release-Metadaten und Plugin-ZIP abrufen.
 
 = 1.1.1 =
 Mehrere Shortcode-Instanzen auf derselben Seite funktionieren unabhängig voneinander, beispielsweise ein Popup und ein Formular im Seiteninhalt.

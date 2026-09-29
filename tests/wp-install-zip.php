@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 $wordpress = dirname(__DIR__, 2) . '/empfängererklärung_form/.tools/wordpress';
-$zip = dirname(__DIR__) . '/dist/reklamationsformular-1.1.1.zip';
+$main = file_get_contents(dirname(__DIR__) . '/reklamationsformular/reklamationsformular.php');
+if (!preg_match('/^[ \t*]*Version:\s*([0-9]+\.[0-9]+\.[0-9]+)$/m', $main, $match)) { throw new RuntimeException('Plugin-Version fehlt.'); }
+$zip = dirname(__DIR__) . '/dist/reklamationsformular-' . $match[1] . '.zip';
 require $wordpress . '/wp-load.php';
 if (wp_get_environment_type() !== 'local') { throw new RuntimeException('Local only'); }
 require_once ABSPATH . 'wp-admin/includes/file.php';

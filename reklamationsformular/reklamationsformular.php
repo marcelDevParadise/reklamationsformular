@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Reklamationsformular
  * Description: Kunden-Reklamationen mit mehreren Artikelpositionen, PDF, E-Mail und geschütztem Archiv.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Plugin URI: https://github.com/marcelDevParadise/reklamationsformular
  * Update URI: https://github.com/marcelDevParadise/reklamationsformular
  * Requires at least: 6.6
@@ -13,7 +13,7 @@
  */
 if (!defined('ABSPATH')) { exit; }
 
-define('RF_VERSION', '1.1.1');
+define('RF_VERSION', '1.1.2');
 define('RF_DIR', __DIR__ . '/');
 define('RF_URL', plugin_dir_url(__FILE__));
 
