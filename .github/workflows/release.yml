@@ -1,0 +1,68 @@
+name: Validate and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45
+        with:
+          php-version: '7.4'
+          extensions: dom, mbstring, gd, zip
+          coverage: none
+      - name: PHP 7.4 syntax
+        run: find reklamationsformular scripts tests -name '*.php' -print0 | xargs -0 -n 1 php -l
+      - name: Validation tests
+        run: php tests/integration.php
+      - name: Build complete release package
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$REF_TYPE" = tag ]; then php scripts/release.php "$REF_NAME"; else php scripts/release.php; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: plugin-release
+          path: |
+            dist/reklamationsformular-*.zip
+            dist/update.json
+            dist/SHA256SUMS.txt
+            dist/release-notes.md
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v') && github.repository == 'marcelDevParadise/reklamationsformular'
+    needs: validate
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Download tested build and publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh run download "$RUN_ID" --name plugin-release --dir dist
+          cd dist
+          sha256sum --check SHA256SUMS.txt
+          gh release create "$RELEASE_TAG" reklamationsformular-*.zip update.json SHA256SUMS.txt --verify-tag --draft --title "Reklamationsformular $RELEASE_TAG" --notes-file release-notes.md
+          gh release edit "$RELEASE_TAG" --draft=false --latest
